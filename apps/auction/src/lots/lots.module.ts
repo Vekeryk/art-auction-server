@@ -8,9 +8,12 @@ import { LotImage } from './entities/lot-image.entity';
 import { Category } from '../categories/category.entity';
 import { Comment } from '../comments/comment.entity';
 import { User } from '../users/user.enitity';
+import { Tag } from '../tags/tag.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lot, LotImage, Category, Comment, User])],
+  imports: [
+    TypeOrmModule.forFeature([Lot, LotImage, Category, Tag, Comment, User]),
+  ],
   providers: [LotsService],
   controllers: [LotsController],
 })
