@@ -8,6 +8,11 @@ import { LotsModule } from './lots/lots.module';
 import { UsersModule } from './users/users.module';
 import { CommentsModule } from './comments/comments.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CategoriesModule } from './categories/categories.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MessagesModule } from './messages/messages.module';
+import { TagsModule } from './tags/tags.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -30,6 +35,11 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
     LotsModule,
     UsersModule,
     CommentsModule,
+    CategoriesModule,
+    NotificationsModule,
+    MessagesModule,
+    TagsModule,
+    ReportsModule,
   ],
   controllers: [AuctionController],
   providers: [AuctionService],
