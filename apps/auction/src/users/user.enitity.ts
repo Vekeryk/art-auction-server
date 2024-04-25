@@ -55,6 +55,7 @@ export class User {
 
   @Column({
     length: 128,
+    nullable: true,
   })
   profilePicture: string;
 

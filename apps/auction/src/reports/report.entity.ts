@@ -24,11 +24,10 @@ export class Report {
   user: User;
 
   @Column({
-    type: 'varchar',
     length: 256,
     nullable: false,
   })
-  message: string;
+  content: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

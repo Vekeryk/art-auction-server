@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 import { AuctionController } from './auction.controller';
 import { AuctionService } from './auction.service';
@@ -20,6 +21,10 @@ import { ImagesModule } from './images/images.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/auction/.env',
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

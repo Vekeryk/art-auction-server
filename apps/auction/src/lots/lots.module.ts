@@ -16,5 +16,6 @@ import { Tag } from '../tags/tag.entity';
   ],
   providers: [LotsService],
   controllers: [LotsController],
+  exports: [LotsService],
 })
 export class LotsModule {}
