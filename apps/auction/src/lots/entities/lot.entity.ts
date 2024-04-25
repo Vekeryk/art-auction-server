@@ -17,10 +17,10 @@ import { Tag } from '../../tags/tag.entity';
 import { User } from '../../users/user.enitity';
 
 export enum LotStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  PENDING = 'pending',
-  CLOSED = 'closed',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING',
+  CLOSED = 'CLOSED',
 }
 
 export enum PaymentMethod {
@@ -43,33 +43,33 @@ export enum DeliveryMethod {
 }
 
 export enum Location {
-  KYIV = 'Kyiv',
-  ODESA = 'Odesa',
-  KHARKIV = 'Kharkiv',
-  DNIPRO = 'Dnipro',
-  ZAPORIZHZHIA = 'Zaporizhzhia',
-  IVANO_FRANKIVSK = 'Ivano-Frankivsk',
-  CHERKASY = 'Cherkasy',
-  CHERNIVTSI = 'Chernivtsi',
-  KHERSON = 'Kherson',
-  KHMELNYTSKYI = 'Khmelnytskyi',
-  LUHANSK = 'Luhansk',
-  MYKOLAIV = 'Mykolaiv',
-  POLTAVA = 'Poltava',
-  RIVNE = 'Rivne',
-  SUMY = 'Sumy',
-  TERNOPIL = 'Ternopil',
-  VINNYTSIA = 'Vinnytsia',
-  VOLYN = 'Volyn',
-  ZAKARPATTIA = 'Zakarpattia',
-  ZHYTOMYR = 'Zhytomyr',
-  KROPYVNYTSKYI = 'Kropyvnytskyi',
-  DONETSK = 'Donetsk',
+  KYIV = 'KYIV',
+  ODESA = 'ODESA',
+  KHARKIV = 'KHARKIV',
+  DNIPRO = 'DNIPRO',
+  ZAPORIZHZHIA = 'ZAPORIZHZHIA',
+  IVANO_FRANKIVSK = 'IVANO_FRANKIVSK',
+  CHERKASY = 'CHERKASY',
+  CHERNIVTSI = 'CHERNIVTSI',
+  KHERSON = 'KHERSON',
+  KHMELNYTSKYI = 'KHMELNYTSKYI',
+  LUHANSK = 'LUHANSK',
+  MYKOLAIV = 'MYKOLAIV',
+  POLTAVA = 'POLTAVA',
+  RIVNE = 'RIVNE',
+  SUMY = 'SUMY',
+  TERNOPIL = 'TERNOPIL',
+  VINNYTSIA = 'VINNYTSIA',
+  VOLYN = 'VOLYN',
+  ZAKARPATTIA = 'ZAKARPATTIA',
+  ZHYTOMYR = 'ZHYTOMYR',
+  KROPYVNYTSKYI = 'KROPYVNYTSKYI',
+  DONETSK = 'DONETSK',
 }
 
 export enum DealType {
-  PREPAYMENT = 'prepayment',
-  CASH_ON_DELIVERY = 'cod',
+  PREPAYMENT = 'PREPAYMENT',
+  CASH_ON_DELIVERY = 'CASH_ON_DELIVERY',
 }
 
 @Entity()

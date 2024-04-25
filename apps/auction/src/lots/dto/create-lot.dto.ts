@@ -6,6 +6,7 @@ import {
   IsInt,
   IsEnum,
   IsArray,
+  IsPositive,
 } from 'class-validator';
 
 import {
@@ -33,6 +34,7 @@ export class CreateLotDto {
   endTime?: Date;
 
   @IsInt()
+  @IsPositive()
   startingPrice: number;
 
   @IsInt()
