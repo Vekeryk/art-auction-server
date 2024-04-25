@@ -19,7 +19,7 @@ export class Comment {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Lot, (lot) => lot.comments)
+  @ManyToOne(() => Lot, (lot) => lot.comments, { eager: false })
   @JoinColumn({ name: 'lot_id' })
   lot: Lot;
 

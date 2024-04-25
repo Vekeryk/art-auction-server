@@ -8,9 +8,10 @@ import { Tag } from '../tags/tag.entity';
 import { addDays } from 'date-fns';
 import { LotImage } from '../images/lot-image.entity';
 import { Category } from '../categories/category.entity';
+import { GenericCrudService } from '@app/common/services/generic-crud.service';
 
 @Injectable()
-export class LotsService {
+export class LotsService extends GenericCrudService<Lot> {
   constructor(
     @InjectRepository(Lot)
     private lotRepository: Repository<Lot>,
@@ -20,7 +21,9 @@ export class LotsService {
     private tagRepository: Repository<Tag>,
     @InjectRepository(LotImage)
     private lotImageRepository: Repository<LotImage>,
-  ) {}
+  ) {
+    super(lotRepository);
+  }
 
   async createLot(createLotDto: CreateLotDto): Promise<Lot> {
     const category = await this.categoryRepository.findOneBy({

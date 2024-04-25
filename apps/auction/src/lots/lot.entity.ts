@@ -15,6 +15,8 @@ import { Category } from '../categories/category.entity';
 import { Comment } from '../comments/comment.entity';
 import { Tag } from '../tags/tag.entity';
 import { User } from '../users/user.enitity';
+import { GenericEntity } from '@app/common/generic-entity';
+import { LotImage } from '../images/lot-image.entity';
 
 export enum LotStatus {
   ACTIVE = 'ACTIVE',
@@ -69,7 +71,7 @@ export enum DealType {
 }
 
 @Entity()
-export class Lot {
+export class Lot extends GenericEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -79,7 +81,7 @@ export class Lot {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
@@ -87,7 +89,7 @@ export class Lot {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, { eager: true })
   @JoinTable({
     name: 'lot_tags',
     joinColumn: {
@@ -101,8 +103,11 @@ export class Lot {
   })
   tags: Tag[];
 
-  @OneToMany(() => Comment, (comment) => comment.lot)
+  @OneToMany(() => Comment, (comment) => comment.lot, { eager: true })
   comments: Comment[];
+
+  @OneToMany(() => LotImage, (lotImage) => lotImage.lot, { eager: true })
+  images: LotImage[];
 
   @Column({
     type: 'enum',

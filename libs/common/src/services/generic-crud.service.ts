@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 
 @Injectable()
@@ -10,8 +10,8 @@ export class GenericCrudService<T> {
     return this.genericRepository.find();
   }
 
-  findOne(id: FindOneOptions<T>): Promise<T> {
-    return this.genericRepository.findOne(id);
+  findOne(id: string): Promise<T> {
+    return this.genericRepository.findOneById(id);
   }
 
   create(entityLike: DeepPartial<T>): Promise<T> {
@@ -30,7 +30,7 @@ export class GenericCrudService<T> {
     return this.genericRepository.save(entity);
   }
 
-  async remove(id: FindOneOptions<T>): Promise<void> {
+  async remove(id: string): Promise<void> {
     const entity = await this.findOne(id);
     await this.genericRepository.remove(entity);
   }
