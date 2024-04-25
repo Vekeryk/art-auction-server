@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LotsService } from './lots.service';
 import { LotsController } from './lots.controller';
-import { Lot } from './entities/lot.entity';
-import { LotImage } from './entities/lot-image.entity';
+import { Lot } from './lot.entity';
+import { LotImage } from '../images/lot-image.entity';
 import { Category } from '../categories/category.entity';
 import { Comment } from '../comments/comment.entity';
 import { User } from '../users/user.enitity';

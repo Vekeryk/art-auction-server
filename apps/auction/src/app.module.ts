@@ -13,6 +13,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
 import { TagsModule } from './tags/tags.module';
 import { ReportsModule } from './reports/reports.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReportsModule } from './reports/reports.module';
     MessagesModule,
     TagsModule,
     ReportsModule,
+    ImagesModule,
   ],
   controllers: [AuctionController],
   providers: [AuctionService],

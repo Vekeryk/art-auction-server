@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { join } from 'path';
 import { createAgent } from '@forestadmin/agent';
 import { createSqlDataSource } from '@forestadmin/datasource-sql';
 
@@ -15,15 +17,19 @@ async function bootstrap() {
     typingsMaxDepth: 5,
   }).addDataSource(createSqlDataSource(process.env.DATABASE_URL));
 
-  const app = await NestFactory.create(AppModule);
-  await agent.mountOnNestJs(app).start();
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // await agent.mountOnNestJs(app).start();
+
+  app.useStaticAssets(join(__dirname, '../../..', 'uploads'), {
+    prefix: '/uploads/',
+  });
 
   app.enableCors({
     origin: 'http://localhost:5173',
     methods: 'OPTIONS,GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
+    allowedHeaders: '*',
   });
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   await app.listen(3000);
 }

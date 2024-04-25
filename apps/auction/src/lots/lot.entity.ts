@@ -11,10 +11,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { Category } from '../../categories/category.entity';
-import { Comment } from '../../comments/comment.entity';
-import { Tag } from '../../tags/tag.entity';
-import { User } from '../../users/user.enitity';
+import { Category } from '../categories/category.entity';
+import { Comment } from '../comments/comment.entity';
+import { Tag } from '../tags/tag.entity';
+import { User } from '../users/user.enitity';
 
 export enum LotStatus {
   ACTIVE = 'ACTIVE',
@@ -24,22 +24,18 @@ export enum LotStatus {
 }
 
 export enum PaymentMethod {
+  BANK_TRANSFER = 'BANK_TRANSFER',
   CASH_ON_MEETING = 'CASH_ON_MEETING',
-  BY_AGREEMENT = 'BY_AGREEMENT',
-  ONLINE_TRANSFER = 'ONLINE_TRANSFER',
   PAY_TO_COURIER = 'PAY_TO_COURIER',
-  STANDARD_BANK_TRANSFER = 'STANDARD_BANK_TRANSFER',
+  BY_AGREEMENT = 'BY_AGREEMENT',
 }
 
 export enum DeliveryMethod {
-  BY_AGREEMENT = 'BY_AGREEMENT',
-  COURIER_SERVICE = 'COURIER_SERVICE',
   NOVA_POST = 'NOVA_POST',
-  PERSONAL_MEETING = 'PERSONAL_MEETING',
-  MAIL_PACKAGE = 'MAIL_PACKAGE',
-  VALUABLE_MAIL_PACKAGE = 'VALUABLE_MAIL_PACKAGE',
-  PICKUP = 'PICKUP',
   UKR_POST = 'UKR_POST',
+  COURIER_SERVICE = 'COURIER_SERVICE',
+  PERSONAL_MEETING = 'PERSONAL_MEETING',
+  BY_AGREEMENT = 'BY_AGREEMENT',
 }
 
 export enum Location {

@@ -4,9 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 
-import { Lot } from './lot.entity';
+import { Lot } from '../lots/lot.entity';
 
 @Entity()
 export class LotImage {
@@ -18,14 +19,11 @@ export class LotImage {
   lot: Lot;
 
   @Column({
-    type: 'int',
-    nullable: false,
-  })
-  index: number;
-
-  @Column({
     length: 128,
     nullable: false,
   })
   image: string;
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 }

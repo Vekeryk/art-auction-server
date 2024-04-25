@@ -1,20 +1,19 @@
 import {
+  IsArray,
+  IsEnum,
+  IsInt,
   IsNotEmpty,
-  IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
-  IsInt,
-  IsEnum,
-  IsArray,
-  IsPositive,
 } from 'class-validator';
 
 import {
   DealType,
   DeliveryMethod,
-  PaymentMethod,
   Location,
-} from '../entities/lot.entity';
+  PaymentMethod,
+} from '../lot.entity';
 
 export class CreateLotDto {
   @IsString()
@@ -22,28 +21,32 @@ export class CreateLotDto {
   title: string;
 
   @IsString()
-  @IsOptional()
-  description?: string;
+  @IsNotEmpty()
+  description: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  categoryId: string;
+
+  @IsArray()
+  @IsUUID(4, { each: true })
+  tagIds: string[];
+
+  @IsArray()
+  @IsUUID(4, { each: true })
+  imageIds: string[];
 
   @IsString()
   @IsNotEmpty()
   startTime: Date;
 
-  @IsString()
-  @IsOptional()
-  endTime?: Date;
+  @IsInt()
+  @IsPositive()
+  durationInDays: number;
 
   @IsInt()
   @IsPositive()
   startingPrice: number;
-
-  @IsInt()
-  @IsOptional()
-  currentPrice?: number;
-
-  @IsUUID()
-  @IsNotEmpty()
-  categoryId: string;
 
   @IsEnum(DealType)
   dealType: DealType;
@@ -58,8 +61,4 @@ export class CreateLotDto {
 
   @IsEnum(Location)
   location: Location;
-
-  @IsArray()
-  @IsUUID(4, { each: true })
-  tags: string[];
 }

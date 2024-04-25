@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-import { Lot } from '../lots/entities/lot.entity';
+import { Lot } from '../lots/lot.entity';
 import { User } from '../users/user.enitity';
 
 @Entity()
