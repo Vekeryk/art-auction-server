@@ -85,6 +85,9 @@ export class Lot extends GenericEntity {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
+  @Column()
+  categoryId: string;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
