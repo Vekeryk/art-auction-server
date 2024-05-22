@@ -7,6 +7,7 @@ import { createAgent } from '@forestadmin/agent';
 import { createSqlDataSource } from '@forestadmin/datasource-sql';
 
 import { AppModule } from './app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const agent = createAgent({
@@ -18,6 +19,15 @@ async function bootstrap() {
   }).addDataSource(createSqlDataSource(process.env.DATABASE_URL));
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://localhost:5672'],
+      queue: 'bids_queue',
+    },
+  });
+
   // await agent.mountOnNestJs(app).start();
 
   app.useStaticAssets(join(__dirname, '../../..', 'uploads'), {
@@ -31,6 +41,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  await app.startAllMicroservices();
   await app.listen(3000);
 }
 bootstrap();

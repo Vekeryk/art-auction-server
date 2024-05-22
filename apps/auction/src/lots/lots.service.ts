@@ -11,6 +11,7 @@ import { LotImage } from '../images/lot-image.entity';
 import { Category } from '../categories/category.entity';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { FilterLotsDto } from './dto/filter-lots.dto';
+import { BidDto } from './dto/bid.dto';
 
 @Injectable()
 export class LotsService extends GenericCrudService<Lot> {
@@ -82,5 +83,13 @@ export class LotsService extends GenericCrudService<Lot> {
       .orderBy('lot.endTime', 'ASC')
       .getManyAndCount();
     return { lots, count };
+  }
+
+  async processBid(bid: BidDto) {
+    // TODO: send notifications
+    return this.lotRepository.update(
+      { id: bid.lotId },
+      { currentPrice: bid.amount },
+    );
   }
 }

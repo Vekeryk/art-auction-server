@@ -19,7 +19,7 @@ export class GenericCrudService<T> {
     return this.genericRepository.save(entity);
   }
 
-  async update(id: number, updateDto: any): Promise<T> {
+  async update(id: string, updateDto: any): Promise<T> {
     const entity = await this.genericRepository.preload({
       id: id,
       ...updateDto,

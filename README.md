@@ -1,16 +1,18 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 ### Installation
 ```bash
-$ npm install
+$ yarn install
 ```
 ### Running the app
 ```bash
 # development
-$ npm run start
-# watch mode
-$ npm run start:dev
+$ yarn run start
+# watch mode auction
+$ yarn run start:dev
+# watch mode bids
+$ yarn run start:dev bids
 # production mode
-$ npm run start:prod
+$ yarn run start:prod
 ```
 ### Running Keycloak
 ```bash
@@ -20,11 +22,11 @@ $ docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=adm
 ### Test
 ```bash
 # unit tests
-$ npm run test
+$ yarn run test
 # e2e tests
-$ npm run test:e2e
+$ yarn run test:e2e
 # test coverage
-$ npm run test:cov
+$ yarn run test:cov
 ```
 ### Setup env variables
 ```

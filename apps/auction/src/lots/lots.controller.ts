@@ -1,8 +1,10 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 import { LotsService } from './lots.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { FilterLotsDto } from './dto/filter-lots.dto';
+import { BidDto } from './dto/bid.dto';
 
 @Controller('lots')
 export class LotsController {
@@ -24,5 +26,10 @@ export class LotsController {
       return this.lotsService.findByTitle(filterLotsDto.title);
     }
     return this.lotsService.findByFilters(filterLotsDto);
+  }
+
+  @EventPattern('bid-placed')
+  handleBidPlaced(@Payload() bid: BidDto) {
+    return this.lotsService.processBid(bid);
   }
 }
