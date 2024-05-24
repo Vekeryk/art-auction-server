@@ -1,0 +1,7 @@
+.dockerignore
+.git
+.gitignore
+.prettierrc
+.vscode
+Dockerfile
+node_modules
