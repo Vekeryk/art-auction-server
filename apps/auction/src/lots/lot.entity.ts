@@ -116,10 +116,19 @@ export class Lot extends GenericEntity {
   endTime: Date;
 
   @Column({ type: 'int', nullable: false })
-  price: number;
+  startingPrice: number;
+
+  @Column({ type: 'int', nullable: true })
+  currentPrice: number;
 
   @Column({ type: 'enum', enum: PaymentMethod, array: true })
   paymentMethods: PaymentMethod[];
+
+  @Column({ type: 'enum', enum: DeliveryMethod, array: true })
+  deliveryMethods: DeliveryMethod[];
+
+  @Column({ type: 'enum', enum: Location })
+  location: Location;
 
   @Column({ type: 'enum', enum: DealType })
   dealType: DealType;
