@@ -14,49 +14,28 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    length: 128,
-    unique: true,
-    nullable: false,
-  })
+  @Column({ length: 128, unique: true, nullable: false })
   username: string;
 
-  @Column({
-    length: 128,
-    unique: true,
-    nullable: false,
-  })
+  @Column({ length: 128, unique: true, nullable: false })
   email: string;
 
   @Column('text')
   passwordHash: string;
 
-  @Column({
-    length: 128,
-  })
+  @Column({ length: 128 })
   firstName: string;
 
-  @Column({
-    length: 128,
-  })
+  @Column({ length: 128 })
   lastName: string;
 
-  @Column({
-    type: 'int',
-    default: 0,
-  })
+  @Column({ type: 'int', default: 0 })
   balance: number;
 
-  @Column({
-    type: 'int',
-    default: 0,
-  })
+  @Column({ type: 'int', default: 0 })
   rating: number;
 
-  @Column({
-    length: 128,
-    nullable: true,
-  })
+  @Column({ length: 128, nullable: true })
   profilePicture: string;
 
   @OneToMany(() => Notification, (notification) => notification.user)

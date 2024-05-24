@@ -95,14 +95,8 @@ export class Lot extends GenericEntity {
   @ManyToMany(() => Tag, { eager: true })
   @JoinTable({
     name: 'lot_tags',
-    joinColumn: {
-      name: 'lot_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'tag_id',
-      referencedColumnName: 'id',
-    },
+    joinColumn: { name: 'lot_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' },
   })
   tags: Tag[];
 
@@ -112,11 +106,7 @@ export class Lot extends GenericEntity {
   @OneToMany(() => LotImage, (lotImage) => lotImage.lot, { eager: true })
   images: LotImage[];
 
-  @Column({
-    type: 'enum',
-    enum: LotStatus,
-    default: LotStatus.PENDING,
-  })
+  @Column({ type: 'enum', enum: LotStatus, default: LotStatus.PENDING })
   status: LotStatus;
 
   @Column({ type: 'timestamp', nullable: false })
@@ -126,35 +116,12 @@ export class Lot extends GenericEntity {
   endTime: Date;
 
   @Column({ type: 'int', nullable: false })
-  startingPrice: number;
+  price: number;
 
-  @Column({ type: 'int', nullable: true })
-  currentPrice: number;
-
-  @Column({
-    type: 'enum',
-    enum: PaymentMethod,
-    array: true,
-  })
+  @Column({ type: 'enum', enum: PaymentMethod, array: true })
   paymentMethods: PaymentMethod[];
 
-  @Column({
-    type: 'enum',
-    enum: DeliveryMethod,
-    array: true,
-  })
-  deliveryMethods: DeliveryMethod[];
-
-  @Column({
-    type: 'enum',
-    enum: Location,
-  })
-  location: Location;
-
-  @Column({
-    type: 'enum',
-    enum: DealType,
-  })
+  @Column({ type: 'enum', enum: DealType })
   dealType: DealType;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

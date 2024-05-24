@@ -29,6 +29,7 @@ export class BidsService extends GenericCrudService<Bid> {
         'The bid amount must be higher than the current highest bid.',
       );
     }
+    console.log('Placing Bid...');
     const placedBid = await this.create({ ...placeBidDto, userId: user.id });
     this.rabbitClient.emit('bid-placed', placedBid);
     return placedBid;

@@ -2,12 +2,15 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+
+import { AuthService } from '@app/common/services/auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Bid } from './bid.entity';
 import { BidsController } from './bids.controller';
 import { BidsService } from './bids.service';
+import { BidsGateway } from './bids.gateway';
 
 @Module({
   imports: [
@@ -44,6 +47,6 @@ import { BidsService } from './bids.service';
     TypeOrmModule.forFeature([Bid]),
   ],
   controllers: [BidsController],
-  providers: [BidsService],
+  providers: [BidsService, AuthService, BidsGateway],
 })
 export class BidsModule {}
