@@ -14,20 +14,20 @@ import { BidsGateway } from './bids.gateway';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './apps/bids/.env',
+    }),
     ClientsModule.register([
       {
         name: 'BIDS_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://localhost:5672'],
+          urls: [process.env.RABBIT_MQ_URL],
           queue: 'bids_queue',
         },
       },
     ]),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: './apps/bids/.env',
-    }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET_KEY,
