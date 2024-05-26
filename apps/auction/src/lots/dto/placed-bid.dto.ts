@@ -1,6 +1,6 @@
 import { IsInt, IsString, IsUUID } from 'class-validator';
 
-export class BidDto {
+export class PlacedBidDto {
   @IsUUID()
   lotId: string;
   @IsUUID()

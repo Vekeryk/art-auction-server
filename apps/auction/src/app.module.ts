@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { AuctionController } from './auction.controller';
 import { AuctionService } from './auction.service';
@@ -35,9 +36,10 @@ import { ImagesModule } from './images/images.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-      logging: true,
+      // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    EventEmitterModule.forRoot(),
     LotsModule,
     UsersModule,
     CommentsModule,

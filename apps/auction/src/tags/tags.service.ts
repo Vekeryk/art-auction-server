@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GenericCrudService } from '@app/common/services/generic-crud.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Tag } from './tag.entity';
 
@@ -12,5 +12,9 @@ export class TagsService extends GenericCrudService<Tag> {
     private tagRepository: Repository<Tag>,
   ) {
     super(tagRepository);
+  }
+
+  findByIds(tagIds: string[]) {
+    return this.tagRepository.findBy({ id: In(tagIds) });
   }
 }

@@ -23,7 +23,6 @@ export class CommentsService extends GenericCrudService<Comment> {
   async createComment(requestUser: RequestUser, messageDto: MessageDto) {
     const lot = await this.lotsService.findOne(messageDto.lotId);
     const user = await this.usersService.findOne(requestUser.id);
-    console.log(lot, user);
     return this.create({ ...messageDto, lot, user });
   }
 }

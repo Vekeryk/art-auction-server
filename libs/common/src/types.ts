@@ -10,7 +10,7 @@ export type KeycloakUserPayload = {
   };
   resource_access: { account: { roles: string[] } };
   scope: string;
-  sid: string;
+  sub: string;
   email_verified: boolean;
   name: string;
   preferred_username: string;

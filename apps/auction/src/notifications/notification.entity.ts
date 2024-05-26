@@ -18,6 +18,9 @@ export class Notification {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column()
+  userId: string;
+
   @Column('text', { nullable: false })
   message: string;
 

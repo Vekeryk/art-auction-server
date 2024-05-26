@@ -34,7 +34,7 @@ async function bootstrap() {
   // await agent.mountOnNestJs(app).start();
 
   app.useStaticAssets(join(__dirname, '../../..', 'uploads'), {
-    prefix: '/uploads/',
+    prefix: '/auction-service/uploads/',
   });
 
   app.enableCors({

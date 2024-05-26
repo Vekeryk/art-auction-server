@@ -18,6 +18,7 @@ import { PlaceBidDto } from './dto/place-bid.dto';
   cors: {
     origin: '*',
   },
+  path: '/bids-service',
 })
 export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -35,13 +36,17 @@ export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(lotId);
       await client.join(lotId);
       const user = await this.authService.validateToken(token);
+      const room = this.server.sockets.adapter.rooms.get(lotId);
+      console.log(user);
       if (user) {
         client.data.user = user;
         client.data.lotId = lotId;
-        const room = this.server.sockets.adapter.rooms.get(lotId);
-        this.server.to(lotId).emit('usersCount', room.size);
+      }
+      if (room) {
+        this.server.to(lotId).emit('usersCountUpdate', room.size);
       }
     } catch (err) {
+      console.log(err);
       client.emit('error', 'Handshake authentication failed');
     }
   }
@@ -51,7 +56,7 @@ export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const lotId = client.data.lotId;
     const room = this.server.sockets.adapter.rooms.get(lotId);
     if (room) {
-      this.server.emit('usersCount', room.size);
+      this.server.to(lotId).emit('usersCountUpdate', room.size);
     }
     console.log(user ? `${user.email} disconnected` : 'anonymous disconnected');
   }
@@ -61,22 +66,14 @@ export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() placeBidDto: PlaceBidDto,
     @ConnectedSocket() client: Socket,
   ) {
-    // console.log(this.server.to(placeBidDto.lotId));
-    // const fetchSockets = await this.server.in(placeBidDto.lotId).fetchSockets();
-    // console.log(fetchSockets);
-    // console.log(fetchSockets.length);
-    // console.log(client.rooms);
-    // console.log(this.server.sockets.adapter.rooms);
-    // console.log(this.server.sockets.adapter.rooms.get(placeBidDto.lotId));
-    // console.log(this.server.sockets.adapter.rooms.get(placeBidDto.lotId).size);
     const user = client.data.user;
     if (!user) {
       client.emit('error', 'Authentication required');
       return;
     }
     try {
-      const updatedLot = await this.bidsService.placeBid(user, placeBidDto);
-      this.server.emit('bidUpdate', updatedLot);
+      const placedBid = await this.bidsService.placeBid(user, placeBidDto);
+      this.server.emit('bidUpdate', placedBid);
     } catch (e) {
       client.emit('error', e.message);
     }

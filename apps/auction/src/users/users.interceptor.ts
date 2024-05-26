@@ -19,11 +19,11 @@ export class UsersInterceptor implements NestInterceptor {
     console.log('User intercepted');
     const request = context.switchToHttp().getRequest();
     const user: RequestUser = request.user;
+    console.log(user);
     if (user) {
-      const dbUser = await this.usersService.findByEmail(user.email);
-      if (dbUser) {
-        user.id = dbUser.id;
-      } else {
+      const dbUser = await this.usersService.findOne(user.id);
+      console.log(dbUser);
+      if (!dbUser) {
         const createdUser = await this.usersService.create({
           ...user,
           username: user.username.split('@')[0].replaceAll('.', ''),
@@ -32,6 +32,7 @@ export class UsersInterceptor implements NestInterceptor {
         });
         user.id = createdUser.id;
       }
+      console.log(user.id);
     }
     return next.handle();
   }

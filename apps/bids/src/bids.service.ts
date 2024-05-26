@@ -30,7 +30,10 @@ export class BidsService extends GenericCrudService<Bid> {
       );
     }
     console.log('Placing Bid...');
-    const placedBid = await this.create({ ...placeBidDto, userId: user.id });
+    const placedBid = await this.create({
+      ...placeBidDto,
+      userId: user.id,
+    });
     this.rabbitClient.emit('bid-placed', placedBid);
     return placedBid;
   }

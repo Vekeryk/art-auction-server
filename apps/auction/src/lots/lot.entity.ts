@@ -88,9 +88,16 @@ export class Lot extends GenericEntity {
   @Column()
   categoryId: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => User, { nullable: true, eager: true })
+  @JoinColumn({ name: 'leader_id' })
+  leader: User;
+
+  @Column({ nullable: true })
+  leaderId: string;
 
   @ManyToMany(() => Tag, { eager: true })
   @JoinTable({

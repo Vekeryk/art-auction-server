@@ -1,53 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { GenericCrudService } from '@app/common/services/generic-crud.service';
 import { ILike, In, Repository } from 'typeorm';
 import { addDays } from 'date-fns';
 
-import { Lot } from './lot.entity';
-import { Tag } from '../tags/tag.entity';
+import { Lot, LotStatus } from './lot.entity';
 import { LotImage } from '../images/lot-image.entity';
-import { Category } from '../categories/category.entity';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { FilterLotsDto } from './dto/filter-lots.dto';
-import { BidDto } from './dto/bid.dto';
+import { PlacedBidDto } from './dto/placed-bid.dto';
+import { RequestUser, UserRole } from '@app/common/types';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotificationEvent } from '../events/notification.event';
+import { TagsService } from '../tags/tags.service';
+import { CategoriesService } from '../categories/categories.service';
+import { UserRatingUpdateEvent } from '../events/user-rating-update.event';
 
 @Injectable()
 export class LotsService extends GenericCrudService<Lot> {
   constructor(
     @InjectRepository(Lot)
     private lotRepository: Repository<Lot>,
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(Tag)
-    private tagRepository: Repository<Tag>,
+    private categoriesService: CategoriesService,
+    private tagsService: TagsService,
     @InjectRepository(LotImage)
     private lotImageRepository: Repository<LotImage>,
+    private eventEmitter: EventEmitter2,
   ) {
     super(lotRepository);
   }
 
-  async createLot(createLotDto: CreateLotDto): Promise<Lot> {
-    const category = await this.categoryRepository.findOneBy({
-      id: createLotDto.categoryId,
-    });
-    const tags = await this.tagRepository.findBy({
-      id: In(createLotDto.tagIds),
-    });
+  async createLot(dto: CreateLotDto): Promise<Lot> {
+    const category = await this.categoriesService.findOne(dto.categoryId);
+    const tags = await this.tagsService.findByIds(dto.tagIds);
     const lot = this.lotRepository.create({
-      ...createLotDto,
+      ...dto,
       category,
       tags,
-      endTime: addDays(createLotDto.startTime, createLotDto.durationInDays),
+      endTime: addDays(dto.startTime, dto.durationInDays),
     });
 
     const savedLot = await this.lotRepository.save(lot);
     await this.lotImageRepository.update(
-      { id: In(createLotDto.imageIds) },
+      { id: In(dto.imageIds) },
       { lot: savedLot },
     );
     return savedLot;
+  }
+
+  async withdrawLot(user: RequestUser, id: string) {
+    const lot = await this.findOne(id);
+    if (!lot || lot.status !== LotStatus.ACTIVE) {
+      throw new NotFoundException('Active lot not found');
+    }
+    if (lot.user.role !== UserRole.MODERATOR && lot.user.id !== user.id) {
+      throw new ForbiddenException('You have no access');
+    }
+    lot.status = LotStatus.INACTIVE;
+    await this.lotRepository.save(lot);
+    this.eventEmitter.emit(
+      'user.rating.update',
+      new UserRatingUpdateEvent(lot.user.id, lot.user.rating - 1),
+    );
   }
 
   findByTitle(title: string) {
@@ -85,11 +104,29 @@ export class LotsService extends GenericCrudService<Lot> {
     return { lots, count };
   }
 
-  async processBid(bid: BidDto) {
-    // TODO: send notifications
-    return this.lotRepository.update(
-      { id: bid.lotId },
-      { currentPrice: bid.amount },
+  async handlePlacedBid(placedBidDto: PlacedBidDto) {
+    const { lotId, userId, amount } = placedBidDto;
+    const lot = await this.findOne(lotId);
+    console.log(placedBidDto);
+    await this.lotRepository.update(
+      { id: lotId },
+      { currentPrice: amount, leaderId: userId },
+    );
+    if (lot.leader) {
+      this.eventEmitter.emit(
+        'notification',
+        new NotificationEvent(
+          lot.leader.id,
+          `Вашу ставку на лот ${lot.title} перебито`,
+        ),
+      );
+    }
+    this.eventEmitter.emit(
+      'notification',
+      new NotificationEvent(
+        lot.user.id,
+        `Отримано нову ставку на лот ${lot.title}`,
+      ),
     );
   }
 }

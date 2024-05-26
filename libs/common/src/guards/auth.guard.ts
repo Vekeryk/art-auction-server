@@ -24,13 +24,12 @@ export class AuthGuard implements CanActivate {
 
     try {
       const secret = `-----BEGIN PUBLIC KEY-----\n${process.env.KEYCLOAK_PUBLIC_KEY}\n-----END PUBLIC KEY-----`;
-      console.log(secret);
       const payload = await this.jwtService.verifyAsync<KeycloakUserPayload>(
         token,
         { secret },
       );
       const user = {
-        id: payload.sid,
+        id: payload.sub,
         role: UserRole.USER,
         username: payload.preferred_username,
         email: payload.email,
@@ -39,7 +38,6 @@ export class AuthGuard implements CanActivate {
         lastName: payload.family_name,
         fullName: payload.name,
       };
-      console.log(user);
       request['user'] = user;
       const roles = this.reflector.get(Roles, handler);
       return this.matchRoles(roles, user.role);

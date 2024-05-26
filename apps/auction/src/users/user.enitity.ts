@@ -3,15 +3,16 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserRole } from '@app/common/types';
 
 import { Notification } from '../notifications/notification.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ type: 'uuid' })
   id: string;
 
   @Column({ length: 128, unique: true, nullable: false })
@@ -19,6 +20,9 @@ export class User {
 
   @Column({ length: 128, unique: true, nullable: false })
   email: string;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 
   @Column('text')
   passwordHash: string;

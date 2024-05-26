@@ -41,7 +41,7 @@ import { BidsGateway } from './bids.gateway';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-      logging: true,
+      // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
     TypeOrmModule.forFeature([Bid]),
