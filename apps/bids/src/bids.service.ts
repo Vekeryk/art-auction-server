@@ -26,14 +26,10 @@ export class BidsService extends GenericCrudService<Bid> {
     });
     if (lastBid && placeBidDto.amount <= lastBid.amount) {
       throw new BadRequestException(
-        'The bid amount must be higher than the current highest bid.',
+        'The bid amount must be higher than the current price.',
       );
     }
-    console.log('Placing Bid...');
-    const placedBid = await this.create({
-      ...placeBidDto,
-      userId: user.id,
-    });
+    const placedBid = await this.create({ ...placeBidDto, userId: user.id });
     this.rabbitClient.emit('bid-placed', placedBid);
     return placedBid;
   }

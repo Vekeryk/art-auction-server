@@ -21,9 +21,10 @@ import { RequestUser } from '@app/common/types';
 export class LotsController {
   constructor(private lotsService: LotsService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createLotDto: CreateLotDto) {
-    return this.lotsService.createLot(createLotDto);
+  create(@AuthUser() user: RequestUser, @Body() createLotDto: CreateLotDto) {
+    return this.lotsService.createLot(user, createLotDto);
   }
 
   @Get(':id')
@@ -44,6 +45,12 @@ export class LotsController {
       return this.lotsService.findByTitle(filterLotsDto.title);
     }
     return this.lotsService.findByFilters(filterLotsDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('user/:userId')
+  userLots(@AuthUser() user: RequestUser, @Param('userId') userId: string) {
+    return this.lotsService.findByUserId(user, userId);
   }
 
   @EventPattern('bid-placed')

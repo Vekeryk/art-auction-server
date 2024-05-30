@@ -18,17 +18,19 @@ export class Message {
   @JoinColumn({ name: 'sender_id' })
   sender: User;
 
+  @Column()
+  senderId: string;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'receiver_id' })
   receiver: User;
 
-  @Column({
-    type: 'varchar',
-    length: 256,
-    nullable: false,
-  })
+  @Column()
+  receiverId: string;
+
+  @Column({ type: 'varchar', length: 256, nullable: false })
   message: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  createdAt: Date;
 }

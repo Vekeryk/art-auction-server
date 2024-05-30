@@ -35,11 +35,12 @@ export class LotsService extends GenericCrudService<Lot> {
     super(lotRepository);
   }
 
-  async createLot(dto: CreateLotDto): Promise<Lot> {
+  async createLot(user: RequestUser, dto: CreateLotDto): Promise<Lot> {
     const category = await this.categoriesService.findOne(dto.categoryId);
     const tags = await this.tagsService.findByIds(dto.tagIds);
     const lot = this.lotRepository.create({
       ...dto,
+      userId: user.id,
       category,
       tags,
       endTime: addDays(dto.startTime, dto.durationInDays),
@@ -82,6 +83,7 @@ export class LotsService extends GenericCrudService<Lot> {
 
     let query = this.lotRepository
       .createQueryBuilder('lot')
+      .where("lot.status = 'ACTIVE'")
       .leftJoinAndSelect('lot.images', 'images')
       .leftJoinAndSelect('lot.tags', 'tag')
       .leftJoinAndSelect('lot.category', 'category');
@@ -107,7 +109,6 @@ export class LotsService extends GenericCrudService<Lot> {
   async handlePlacedBid(placedBidDto: PlacedBidDto) {
     const { lotId, userId, amount } = placedBidDto;
     const lot = await this.findOne(lotId);
-    console.log(placedBidDto);
     await this.lotRepository.update(
       { id: lotId },
       { currentPrice: amount, leaderId: userId },
@@ -117,7 +118,7 @@ export class LotsService extends GenericCrudService<Lot> {
         'notification',
         new NotificationEvent(
           lot.leader.id,
-          `Вашу ставку на лот ${lot.title} перебито`,
+          `Вашу ставку на лот ${lot.title} було перебито`,
         ),
       );
     }
@@ -128,5 +129,15 @@ export class LotsService extends GenericCrudService<Lot> {
         `Отримано нову ставку на лот ${lot.title}`,
       ),
     );
+  }
+
+  public findByUserId(user: RequestUser, userId: string) {
+    return this.lotRepository.find({
+      where: {
+        userId,
+        status: userId === user.id ? LotStatus.ACTIVE : undefined,
+      },
+      order: { endTime: 'DESC' },
+    });
   }
 }

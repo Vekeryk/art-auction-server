@@ -92,6 +92,9 @@ export class Lot extends GenericEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column({ nullable: true })
+  userId: string;
+
   @ManyToOne(() => User, { nullable: true, eager: true })
   @JoinColumn({ name: 'leader_id' })
   leader: User;

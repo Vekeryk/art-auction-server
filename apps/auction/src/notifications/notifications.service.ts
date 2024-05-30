@@ -16,6 +16,20 @@ export class NotificationsService extends GenericCrudService<Notification> {
     super(notificationRepository);
   }
 
+  public findUnreadByUserId(userId: string) {
+    return this.notificationRepository.find({
+      where: { userId, read: false },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  public readUserNotifications(userId: string) {
+    return this.notificationRepository.update(
+      { userId, read: false },
+      { read: true },
+    );
+  }
+
   @OnEvent('notification')
   async updateRating(payload: NotificationEvent) {
     console.log('notification', payload);
