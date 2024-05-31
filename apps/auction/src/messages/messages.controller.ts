@@ -25,6 +25,6 @@ export class MessagesController {
   @UseGuards(AuthGuard)
   @Post()
   sendMessage(@AuthUser() user: RequestUser, @Body() dto: CreateMessageDto) {
-    return this.messagesService.createMessage(user, dto);
+    return this.messagesService.createUserMessage(user, dto);
   }
 }

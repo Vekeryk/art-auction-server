@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 
 import { Notification } from './notification.entity';
 import { NotificationEvent } from '../events/notification.event';
+import { LotClosedEvent } from '../events/lot-closed.event';
 
 @Injectable()
 export class NotificationsService extends GenericCrudService<Notification> {
@@ -30,9 +31,28 @@ export class NotificationsService extends GenericCrudService<Notification> {
     );
   }
 
+  public createNotification(userId: string, message: string) {
+    return this.create({ userId, message });
+  }
+
   @OnEvent('notification')
   async updateRating(payload: NotificationEvent) {
     console.log('notification', payload);
     await this.create(payload);
+  }
+
+  @OnEvent('lot.closed')
+  async onLotClosed(payload: LotClosedEvent) {
+    console.log('onLotClosed notificationService');
+    await this.createNotification(
+      payload.seller.id,
+      `Торги за лотом ${payload.lot.title} завершено`,
+    );
+    if (payload.buyer) {
+      await this.createNotification(
+        payload.buyer.id,
+        `Ви виграли лот ${payload.lot.title}. Зв'яжіться з продавцем`,
+      );
+    }
   }
 }

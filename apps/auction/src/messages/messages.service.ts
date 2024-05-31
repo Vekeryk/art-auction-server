@@ -7,6 +7,8 @@ import { Message } from './message.entity';
 import { RequestUser } from '@app/common/types';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UsersService } from '../users/users.service';
+import { OnEvent } from '@nestjs/event-emitter';
+import { LotClosedEvent } from '../events/lot-closed.event';
 
 @Injectable()
 export class MessagesService extends GenericCrudService<Message> {
@@ -62,7 +64,7 @@ export class MessagesService extends GenericCrudService<Message> {
     return { person, messages };
   }
 
-  public async createMessage(user: RequestUser, dto: CreateMessageDto) {
+  public async createUserMessage(user: RequestUser, dto: CreateMessageDto) {
     const dialogExists = await this.messageRepository.exists({
       where: [{ senderId: user.id }, { receiverId: user.id }],
     });
@@ -70,5 +72,18 @@ export class MessagesService extends GenericCrudService<Message> {
       throw new NotFoundException('Dialog not found!');
     }
     return this.create({ ...dto, senderId: user.id });
+  }
+
+  @OnEvent('lot.closed')
+  onLotClosed(payload: LotClosedEvent) {
+    console.log('onLotClosed messagesService');
+    if (payload.buyer) {
+      return this.create({
+        message:
+          'Вітаю вас виграшем лоту! Чи є у вас якісь побажання щодо доставки?',
+        senderId: payload.seller.id,
+        receiverId: payload.buyer.id,
+      });
+    }
   }
 }

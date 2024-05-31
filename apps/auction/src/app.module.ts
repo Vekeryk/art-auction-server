@@ -16,6 +16,7 @@ import { MessagesModule } from './messages/messages.module';
 import { TagsModule } from './tags/tags.module';
 import { ReportsModule } from './reports/reports.module';
 import { ImagesModule } from './images/images.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ImagesModule } from './images/images.module';
       namingStrategy: new SnakeNamingStrategy(),
     }),
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     LotsModule,
     UsersModule,
     CommentsModule,

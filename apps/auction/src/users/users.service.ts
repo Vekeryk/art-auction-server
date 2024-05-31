@@ -5,7 +5,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Repository } from 'typeorm';
 
 import { User } from './user.enitity';
-import { UserRatingUpdateEvent } from '../events/user-rating-update.event';
+import { LotClosedEvent } from '../events/lot-closed.event';
 
 @Injectable()
 export class UsersService extends GenericCrudService<User> {
@@ -16,19 +16,22 @@ export class UsersService extends GenericCrudService<User> {
     super(userRepository);
   }
 
-  findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOneBy({ email });
+  public async incrementRating(user: User) {
+    user.rating = user.rating + 1;
+    await this.userRepository.save(user);
   }
 
-  @OnEvent('user.rating.update')
-  async updateRating(payload: UserRatingUpdateEvent) {
-    console.log('user.rating.update', payload);
-    const { userId, newRating } = payload;
-    await this.userRepository.update(
-      { id: userId },
-      {
-        rating: newRating,
-      },
-    );
+  public async decrementRating(user: User) {
+    user.rating = user.rating - 1;
+    await this.userRepository.save(user);
+  }
+
+  @OnEvent('lot.closed')
+  async onClosedLot(payload: LotClosedEvent) {
+    console.log('onClosedLot usersService');
+    if (payload.buyer) {
+      await this.incrementRating(payload.seller);
+      await this.incrementRating(payload.buyer);
+    }
   }
 }

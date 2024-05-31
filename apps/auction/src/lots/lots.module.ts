@@ -9,12 +9,16 @@ import { Comment } from '../comments/comment.entity';
 import { User } from '../users/user.enitity';
 import { CategoriesModule } from '../categories/categories.module';
 import { TagsModule } from '../tags/tags.module';
+import { UsersModule } from '../users/users.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Lot, LotImage, Comment, User]),
     CategoriesModule,
     TagsModule,
+    UsersModule,
+    NotificationsModule,
   ],
   providers: [LotsService],
   controllers: [LotsController],

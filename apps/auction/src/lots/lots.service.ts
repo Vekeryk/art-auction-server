@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { GenericCrudService } from '@app/common/services/generic-crud.service';
-import { ILike, In, Repository } from 'typeorm';
+import { ILike, In, LessThan, Repository } from 'typeorm';
 import { addDays } from 'date-fns';
 
 import { Lot, LotStatus } from './lot.entity';
@@ -16,20 +16,24 @@ import { FilterLotsDto } from './dto/filter-lots.dto';
 import { PlacedBidDto } from './dto/placed-bid.dto';
 import { RequestUser, UserRole } from '@app/common/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NotificationEvent } from '../events/notification.event';
 import { TagsService } from '../tags/tags.service';
 import { CategoriesService } from '../categories/categories.service';
-import { UserRatingUpdateEvent } from '../events/user-rating-update.event';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { LotClosedEvent } from '../events/lot-closed.event';
+import { UsersService } from '../users/users.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class LotsService extends GenericCrudService<Lot> {
   constructor(
     @InjectRepository(Lot)
     private lotRepository: Repository<Lot>,
-    private categoriesService: CategoriesService,
-    private tagsService: TagsService,
     @InjectRepository(LotImage)
     private lotImageRepository: Repository<LotImage>,
+    private categoriesService: CategoriesService,
+    private tagsService: TagsService,
+    private usersService: UsersService,
+    private notificationsService: NotificationsService,
     private eventEmitter: EventEmitter2,
   ) {
     super(lotRepository);
@@ -64,10 +68,7 @@ export class LotsService extends GenericCrudService<Lot> {
     }
     lot.status = LotStatus.INACTIVE;
     await this.lotRepository.save(lot);
-    this.eventEmitter.emit(
-      'user.rating.update',
-      new UserRatingUpdateEvent(lot.user.id, lot.user.rating - 1),
-    );
+    await this.usersService.decrementRating(lot.user);
   }
 
   findByTitle(title: string) {
@@ -113,21 +114,15 @@ export class LotsService extends GenericCrudService<Lot> {
       { id: lotId },
       { currentPrice: amount, leaderId: userId },
     );
-    if (lot.leader) {
-      this.eventEmitter.emit(
-        'notification',
-        new NotificationEvent(
-          lot.leader.id,
-          `Вашу ставку на лот ${lot.title} було перебито`,
-        ),
+    if (lot.leaderId) {
+      await this.notificationsService.createNotification(
+        lot.leaderId,
+        `Вашу ставку на лот ${lot.title} було перебито`,
       );
     }
-    this.eventEmitter.emit(
-      'notification',
-      new NotificationEvent(
-        lot.user.id,
-        `Отримано нову ставку на лот ${lot.title}`,
-      ),
+    await this.notificationsService.createNotification(
+      lot.userId,
+      `Отримано нову ставку на лот ${lot.title}`,
     );
   }
 
@@ -139,5 +134,23 @@ export class LotsService extends GenericCrudService<Lot> {
       },
       order: { endTime: 'DESC' },
     });
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async processClosedLots() {
+    const now = new Date();
+    const finishedLots = await this.lotRepository.findBy({
+      endTime: LessThan(now),
+      status: LotStatus.ACTIVE,
+    });
+    for (const lot of finishedLots) {
+      lot.status = LotStatus.CLOSED;
+      const { user: seller, leader: buyer } = lot;
+      this.eventEmitter.emit(
+        'lot.closed',
+        new LotClosedEvent(lot, seller, buyer),
+      );
+    }
+    await this.lotRepository.save(finishedLots);
   }
 }
