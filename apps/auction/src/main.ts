@@ -11,14 +11,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  // const agent = createAgent({
-  //   authSecret: process.env.FOREST_AUTH_SECRET,
-  //   envSecret: process.env.FOREST_ENV_SECRET,
-  //   isProduction: process.env.NODE_ENV === 'production',
-  //   typingsPath: './typings.ts',
-  //   typingsMaxDepth: 5,
-  // }).addDataSource(createSqlDataSource(process.env.DATABASE_URL));
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
@@ -31,7 +23,16 @@ async function bootstrap() {
     },
   });
 
-  // await agent.mountOnNestJs(app).start();
+  if (process.env.FOREST_ADMIN_ENABLED === 'true') {
+    const agent = createAgent({
+      authSecret: process.env.FOREST_AUTH_SECRET,
+      envSecret: process.env.FOREST_ENV_SECRET,
+      isProduction: process.env.NODE_ENV === 'production',
+      typingsPath: './typings.ts',
+      typingsMaxDepth: 5,
+    }).addDataSource(createSqlDataSource(process.env.DATABASE_URL));
+    await agent.mountOnNestJs(app).start();
+  }
 
   app.useStaticAssets(join(__dirname, '../../..', 'uploads'), {
     prefix: '/auction-service/uploads/',
