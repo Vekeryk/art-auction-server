@@ -27,7 +27,7 @@ export class UsersService extends GenericCrudService<User> {
   }
 
   @OnEvent('lot.closed')
-  async onClosedLot(payload: LotClosedEvent) {
+  async onLotClosed(payload: LotClosedEvent) {
     console.log('onClosedLot usersService');
     if (payload.buyer) {
       await this.incrementRating(payload.seller);
