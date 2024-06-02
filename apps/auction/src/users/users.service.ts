@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GenericCrudService } from '@app/common/services/generic-crud.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { User } from './user.enitity';
 import { LotClosedEvent } from '../events/lot-closed.event';
@@ -14,6 +14,10 @@ export class UsersService extends GenericCrudService<User> {
     private userRepository: Repository<User>,
   ) {
     super(userRepository);
+  }
+
+  findByIds(ids: string[]) {
+    return this.userRepository.findBy({ id: In(ids) });
   }
 
   public async incrementRating(user: User) {

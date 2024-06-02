@@ -18,7 +18,7 @@ import { PlaceBidDto } from './dto/place-bid.dto';
   cors: {
     origin: '*',
   },
-  path: '/bids-service',
+  path: '/bids-service/ws',
 })
 export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -73,7 +73,7 @@ export class BidsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     try {
       const placedBid = await this.bidsService.placeBid(user, placeBidDto);
-      this.server.emit('bidUpdate', placedBid);
+      this.server.emit('bidUpdate', { ...placedBid, user });
     } catch (e) {
       client.emit('error', e.message);
     }

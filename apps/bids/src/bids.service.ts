@@ -19,6 +19,13 @@ export class BidsService extends GenericCrudService<Bid> {
     super(bidRepository);
   }
 
+  public findAllByLotId(lotId: string) {
+    return this.bidRepository.find({
+      where: { lotId },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
   async placeBid(user: RequestUser, placeBidDto: PlaceBidDto) {
     const lastBid = await this.bidRepository.findOne({
       where: { lotId: placeBidDto.lotId },
