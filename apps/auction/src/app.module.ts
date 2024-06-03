@@ -36,7 +36,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
       // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
