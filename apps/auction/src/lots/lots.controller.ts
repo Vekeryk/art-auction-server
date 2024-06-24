@@ -38,7 +38,6 @@ export class LotsController {
     return this.lotsService.withdrawLot(user, id);
   }
 
-  @UseGuards(AuthGuard)
   @Get()
   filterLots(@Query() filterLotsDto: FilterLotsDto) {
     if (filterLotsDto.title) {
