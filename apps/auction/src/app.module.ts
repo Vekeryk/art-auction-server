@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AuctionController } from './auction.controller';
 import { AuctionService } from './auction.service';
@@ -16,7 +17,6 @@ import { MessagesModule } from './messages/messages.module';
 import { TagsModule } from './tags/tags.module';
 import { ReportsModule } from './reports/reports.module';
 import { ImagesModule } from './images/images.module';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      // synchronize: true,
       // logging: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),

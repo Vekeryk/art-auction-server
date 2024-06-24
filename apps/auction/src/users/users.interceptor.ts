@@ -21,6 +21,7 @@ export class UsersInterceptor implements NestInterceptor {
     const user: RequestUser = request.user;
     console.log(user);
     if (user) {
+      console.log(user.id);
       const dbUser = await this.usersService.findOne(user.id);
       console.log(dbUser);
       if (!dbUser) {
